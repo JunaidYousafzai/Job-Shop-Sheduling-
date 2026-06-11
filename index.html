@@ -3,454 +3,172 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Job Shop Scheduling Optimization using Genetic Algorithms, Particle Swarm Optimization, and Ant Colony Optimization — A premium academic capstone project showcase.">
-    <title>Job Shop Scheduling Optimizer | GA, PSO &amp; ACO</title>
+    <title>Job Shop Scheduling Optimizer — Genetic Algorithm</title>
+    <meta name="description" content="Real GA-based Job Shop Scheduling Optimizer with manual input, CSV upload, and dynamic Gantt chart visualization.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <!-- ============ PARTICLE CANVAS ============ -->
-    <canvas id="particleCanvas"></canvas>
 
-    <!-- ============ NAVBAR ============ -->
-    <nav class="navbar" id="navbar">
-        <div class="nav-inner">
-            <a href="#" class="nav-logo">
-                <span class="logo-icon">⚙</span>
-                <span class="logo-text">JobShop<span class="accent">Optimizer</span></span>
-            </a>
-            <div class="nav-links">
-                <a href="#algorithms" class="nav-link">Algorithms</a>
-                <a href="#architecture" class="nav-link">Architecture</a>
-                <a href="#gantt" class="nav-link">Gantt Chart</a>
-                <a href="#metrics" class="nav-link">Metrics</a>
-                <a href="#cta" class="nav-link nav-cta-btn">Get Started</a>
-            </div>
-            <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
-                <span></span><span></span><span></span>
-            </button>
-        </div>
-    </nav>
-
-    <!-- ============ MOBILE MENU ============ -->
-    <div class="mobile-menu" id="mobileMenu">
-        <a href="#algorithms" class="mobile-link">Algorithms</a>
-        <a href="#architecture" class="mobile-link">Architecture</a>
-        <a href="#gantt" class="mobile-link">Gantt Chart</a>
-        <a href="#metrics" class="mobile-link">Metrics</a>
-        <a href="#cta" class="mobile-link">Get Started</a>
+<!-- NAVBAR -->
+<nav class="navbar">
+    <div class="nav-inner">
+        <div class="nav-logo"><span class="logo-icon">⚙</span> JobShop<span class="accent">GA</span></div>
+        <div class="nav-status" id="navStatus">Ready</div>
     </div>
+</nav>
 
-    <!-- ============ HERO SECTION ============ -->
-    <section class="hero" id="hero">
-        <div class="hero-glow hero-glow-1"></div>
-        <div class="hero-glow hero-glow-2"></div>
-        <div class="hero-glow hero-glow-3"></div>
+<!-- MAIN LAYOUT -->
+<main class="app-layout">
 
-        <div class="hero-content">
-            <div class="hero-badge animate-in">
-                <span class="badge-dot"></span>
-                Manufacturing &bull; Operations Research &bull; Metaheuristics
+    <!-- ===== LEFT PANEL: INPUT ===== -->
+    <aside class="panel panel-left" id="panelLeft">
+        <div class="panel-scroll">
+
+            <!-- TAB SWITCHER -->
+            <div class="tab-switcher">
+                <button class="tab-btn active" data-tab="manual" id="tabManual">✏️ Manual Input</button>
+                <button class="tab-btn" data-tab="csv" id="tabCsv">📄 CSV Upload</button>
             </div>
-            <h1 class="hero-title animate-in">
-                Job Shop Scheduling Optimization<br>
-                <span class="gradient-text">Using GA, PSO &amp; ACO</span>
-            </h1>
-            <p class="hero-subtitle animate-in">
-                Manufacturing Operations Research Project demonstrating how Genetic Algorithms, 
-                Particle Swarm Optimization, and Ant Colony Optimization solve Job Shop Scheduling 
-                Problems while maximizing code reuse from a timetable scheduling system.
-            </p>
-            <div class="hero-actions animate-in">
-                <a href="#main-card" class="btn btn-primary">
-                    <span>Explore Project</span>
-                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </a>
-                <a href="#gantt" class="btn btn-ghost">
-                    <span>View Gantt Demo</span>
-                </a>
+
+            <!-- MANUAL INPUT TAB -->
+            <div class="tab-content active" id="manualTab">
+                <div class="input-header">
+                    <h3>Define Jobs & Operations</h3>
+                    <button class="btn btn-sm btn-accent" id="addJobBtn">+ Add Job</button>
+                </div>
+                <div id="jobsContainer"></div>
+                <button class="btn btn-sm btn-ghost" id="loadSampleBtn" style="margin-top:8px;width:100%">📦 Load Sample Data (FT06)</button>
             </div>
-            <!-- Algorithm floating icons -->
-            <div class="hero-floating">
-                <div class="float-icon float-dna" title="Genetic Algorithm">🧬</div>
-                <div class="float-icon float-swarm" title="Particle Swarm">🐝</div>
-                <div class="float-icon float-ant" title="Ant Colony">🐜</div>
-                <div class="float-icon float-gear" title="Optimization">⚙️</div>
-                <div class="float-icon float-chart" title="Analytics">📊</div>
+
+            <!-- CSV TAB -->
+            <div class="tab-content" id="csvTab">
+                <div class="upload-zone" id="dropZone">
+                    <div class="upload-icon">📁</div>
+                    <p>Drag & drop CSV file here</p>
+                    <p class="upload-sub">or click to browse</p>
+                    <input type="file" id="csvFileInput" accept=".csv" hidden>
+                </div>
+                <div class="csv-format">
+                    <p class="format-label">Expected CSV format:</p>
+                    <code>Job,Operation,Machine,Duration<br>1,1,1,3<br>1,2,3,4<br>...</code>
+                </div>
+                <button class="btn btn-sm btn-ghost" id="loadSampleCsvBtn" style="width:100%">📦 Load Sample Dataset</button>
+                <button class="btn btn-sm btn-ghost" id="downloadSampleBtn" style="width:100%;margin-top:6px">⬇ Download Sample CSV</button>
+            </div>
+
+            <!-- DATA PREVIEW -->
+            <div class="data-preview" id="dataPreview" style="display:none">
+                <h4>📋 Data Preview</h4>
+                <div class="preview-stats" id="previewStats"></div>
+                <div class="preview-table-wrap">
+                    <table class="preview-table" id="previewTable">
+                        <thead><tr><th>Job</th><th>Op</th><th>Machine</th><th>Duration</th></tr></thead>
+                        <tbody id="previewBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- GA SETTINGS -->
+            <div class="settings-section">
+                <h4>⚙️ GA Parameters</h4>
+                <div class="setting-row">
+                    <label>Population Size</label>
+                    <input type="number" id="popSize" value="100" min="10" max="500" class="setting-input">
+                </div>
+                <div class="setting-row">
+                    <label>Generations</label>
+                    <input type="number" id="generations" value="200" min="10" max="2000" class="setting-input">
+                </div>
+                <div class="setting-row">
+                    <label>Mutation Rate</label>
+                    <input type="number" id="mutRate" value="0.15" min="0.01" max="1" step="0.01" class="setting-input">
+                </div>
+                <div class="setting-row">
+                    <label>Crossover Rate</label>
+                    <input type="number" id="crossRate" value="0.8" min="0.1" max="1" step="0.05" class="setting-input">
+                </div>
+                <div class="setting-row">
+                    <label>Tournament Size</label>
+                    <input type="number" id="tournSize" value="3" min="2" max="10" class="setting-input">
+                </div>
+                <div class="setting-row">
+                    <label>Elitism Count</label>
+                    <input type="number" id="elitism" value="2" min="1" max="20" class="setting-input">
+                </div>
+            </div>
+
+            <!-- RUN BUTTON -->
+            <button class="btn btn-run" id="runBtn" disabled>
+                <span id="runBtnText">🚀 Run Genetic Algorithm</span>
+            </button>
+            <div class="progress-wrap" id="progressWrap" style="display:none">
+                <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+                <span class="progress-label" id="progressLabel">0%</span>
             </div>
         </div>
-    </section>
+    </aside>
 
-    <!-- ============ MAIN PROJECT CARD ============ -->
-    <section class="section" id="main-card">
-        <div class="container">
-            <div class="project-card glass-card">
-                <div class="project-card-header">
-                    <div class="project-card-title-area">
-                        <h2 class="project-card-title">Job Shop Scheduling Optimization</h2>
-                        <p class="project-card-sub">Final Year Capstone Project — Metaheuristic Approaches</p>
-                    </div>
-                    <div class="project-card-meta">
-                        <span class="badge badge-orange">Manufacturing</span>
-                        <span class="badge badge-blue">Operations Research</span>
-                        <div class="star-rating" aria-label="5 out of 5 stars">
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                            <span class="star filled">★</span>
-                        </div>
+    <!-- ===== CENTER: VISUALIZATION ===== -->
+    <section class="panel panel-center">
+        <!-- EMPTY STATE -->
+        <div class="empty-state" id="emptyState">
+            <div class="empty-icon">🏭</div>
+            <h2>Job Shop Scheduling Optimizer</h2>
+            <p>Define jobs using the manual input form or upload a CSV file, then run the Genetic Algorithm to generate an optimized schedule.</p>
+            <div class="empty-steps">
+                <div class="step"><span class="step-num">1</span>Define jobs & operations</div>
+                <div class="step"><span class="step-num">2</span>Configure GA parameters</div>
+                <div class="step"><span class="step-num">3</span>Run optimization</div>
+                <div class="step"><span class="step-num">4</span>View Gantt chart & results</div>
+            </div>
+        </div>
+
+        <!-- RESULTS (hidden until GA runs) -->
+        <div class="results-area" id="resultsArea" style="display:none">
+            <!-- METRICS ROW -->
+            <div class="metrics-row" id="metricsRow">
+                <div class="metric-card"><div class="mc-label">Best Makespan</div><div class="mc-value" id="metricMakespan">—</div></div>
+                <div class="metric-card"><div class="mc-label">Best Generation</div><div class="mc-value" id="metricBestGen">—</div></div>
+                <div class="metric-card"><div class="mc-label">Execution Time</div><div class="mc-value" id="metricTime">—</div></div>
+                <div class="metric-card"><div class="mc-label">Total Operations</div><div class="mc-value" id="metricOps">—</div></div>
+            </div>
+
+            <!-- GANTT CHART -->
+            <div class="gantt-section glass-card">
+                <div class="gantt-header">
+                    <h3>📊 Gantt Chart — Optimized Schedule</h3>
+                    <div class="gantt-actions">
+                        <button class="btn btn-sm btn-ghost" id="downloadScheduleBtn">⬇ Download Schedule</button>
                     </div>
                 </div>
+                <div class="gantt-legend" id="ganttLegend"></div>
+                <div class="gantt-container" id="ganttContainer"></div>
+                <div class="gantt-time-ruler" id="ganttRuler"></div>
+            </div>
 
-                <!-- Code Reuse Section -->
-                <div class="code-reuse-section">
-                    <div class="code-reuse-header">
-                        <h3>Code Reuse from Timetable Scheduler</h3>
-                        <span class="reuse-percent" id="reusePercent">0%</span>
-                    </div>
-                    <div class="progress-bar-track">
-                        <div class="progress-bar-fill" id="reuseBar" style="width:0%"></div>
-                    </div>
-                    <p class="code-reuse-desc">
-                        Fitness functions, initialization logic, iteration framework, and constraint checking 
-                        reused from timetable scheduling system.
-                    </p>
-                </div>
+            <!-- CONVERGENCE CHART -->
+            <div class="convergence-section glass-card">
+                <h3>📈 GA Convergence — Fitness Over Generations</h3>
+                <canvas id="convergenceCanvas" height="280"></canvas>
+            </div>
 
-                <!-- Two Column Layout -->
-                <div class="two-col">
-                    <!-- LEFT COLUMN -->
-                    <div class="col-left">
-                        <div class="col-header">
-                            <span class="col-icon">🎯</span>
-                            <h3>What It Solves</h3>
-                        </div>
-                        <p class="solve-desc">
-                            Schedule <strong>n jobs</strong> on <strong>m machines</strong> while respecting 
-                            operation precedence constraints and minimizing total completion time 
-                            (<span class="highlight">Makespan</span>).
-                        </p>
-
-                        <!-- GA Section -->
-                        <div class="algo-card algo-ga">
-                            <div class="algo-card-header">
-                                <span class="algo-icon">🧬</span>
-                                <h4>Genetic Algorithm</h4>
-                            </div>
-                            <ul class="algo-list">
-                                <li><span class="list-check">›</span> Chromosome = operation sequence</li>
-                                <li><span class="list-check">›</span> Order Crossover (OX)</li>
-                                <li><span class="list-check">›</span> Swap Mutation</li>
-                                <li><span class="list-check">›</span> Preserves job precedence</li>
-                            </ul>
-                        </div>
-
-                        <!-- ACO Section -->
-                        <div class="algo-card algo-aco">
-                            <div class="algo-card-header">
-                                <span class="algo-icon">🐜</span>
-                                <h4>Ant Colony Optimization</h4>
-                            </div>
-                            <ul class="algo-list">
-                                <li><span class="list-check">›</span> Ants build operation schedules</li>
-                                <li><span class="list-check">›</span> Pheromone trails guide search</li>
-                                <li><span class="list-check">›</span> Reduces machine idle time</li>
-                                <li><span class="list-check">›</span> Improves sequencing quality</li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <!-- RIGHT COLUMN -->
-                    <div class="col-right">
-                        <div class="col-header">
-                            <span class="col-icon">🏗️</span>
-                            <h3>Reuse Architecture</h3>
-                        </div>
-
-                        <!-- Architecture Diagram -->
-                        <div class="arch-diagram">
-                            <div class="arch-node arch-source">
-                                <span class="arch-node-icon">📅</span>
-                                <span>Timetable Scheduler</span>
-                            </div>
-                            <div class="arch-arrow"><span class="arrow-line"></span><span class="arrow-head">▼</span></div>
-                            <div class="arch-node arch-shared">
-                                <span class="arch-node-icon">⚡</span>
-                                <span>Shared Fitness Engine</span>
-                            </div>
-                            <div class="arch-arrow"><span class="arrow-line"></span><span class="arrow-head">▼</span></div>
-                            <div class="arch-node arch-shared">
-                                <span class="arch-node-icon">👥</span>
-                                <span>Population Generator</span>
-                            </div>
-                            <div class="arch-arrow"><span class="arrow-line"></span><span class="arrow-head">▼</span></div>
-                            <div class="arch-node arch-shared">
-                                <span class="arch-node-icon">🔒</span>
-                                <span>Constraint Framework</span>
-                            </div>
-                            <div class="arch-arrow"><span class="arrow-line"></span><span class="arrow-head">▼</span></div>
-                            <div class="arch-node arch-target">
-                                <span class="arch-node-icon">🏭</span>
-                                <span>Job Shop Scheduler</span>
-                            </div>
-                        </div>
-
-                        <!-- PSO Section -->
-                        <div class="algo-card algo-pso">
-                            <div class="algo-card-header">
-                                <span class="algo-icon">🐝</span>
-                                <h4>Particle Swarm Optimization</h4>
-                            </div>
-                            <ul class="algo-list">
-                                <li><span class="list-check">›</span> Particle = job permutation</li>
-                                <li><span class="list-check">›</span> Velocity represented by swap sequences</li>
-                                <li><span class="list-check">›</span> Position updates use swap operators</li>
-                                <li><span class="list-check">›</span> Local and global best tracking</li>
-                            </ul>
-                        </div>
-                    </div>
+            <!-- SCHEDULE TABLE -->
+            <div class="schedule-section glass-card">
+                <h3>📋 Detailed Schedule</h3>
+                <div class="schedule-table-wrap">
+                    <table class="schedule-table" id="scheduleTable">
+                        <thead><tr><th>Machine</th><th>Job</th><th>Operation</th><th>Start</th><th>End</th><th>Duration</th></tr></thead>
+                        <tbody id="scheduleBody"></tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </section>
+</main>
 
-    <!-- ============ NEW COMPONENTS SECTION ============ -->
-    <section class="section" id="components">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-badge">Components</span>
-                <h2 class="section-title">New Components <span class="gradient-text">Needed</span></h2>
-                <p class="section-desc">Specialized modules built for the Job Shop domain</p>
-            </div>
-            <div class="checklist-grid">
-                <div class="checklist-card glass-card">
-                    <div class="check-icon">✓</div>
-                    <h4>Operation Sequence Encoding</h4>
-                    <p>Encode job operations as ordered sequences for metaheuristic processing</p>
-                </div>
-                <div class="checklist-card glass-card">
-                    <div class="check-icon">✓</div>
-                    <h4>Permutation Decoder</h4>
-                    <p>Decode permutation-based solutions into feasible machine schedules</p>
-                </div>
-                <div class="checklist-card glass-card">
-                    <div class="check-icon">✓</div>
-                    <h4>Gantt Chart Visualizer</h4>
-                    <p>Render interactive timeline views of machine-job assignments</p>
-                </div>
-                <div class="checklist-card glass-card">
-                    <div class="check-icon">✓</div>
-                    <h4>Makespan Calculator</h4>
-                    <p>Compute total completion time across all machines efficiently</p>
-                </div>
-                <div class="checklist-card glass-card">
-                    <div class="check-icon">✓</div>
-                    <h4>Machine Allocation Engine</h4>
-                    <p>Assign operations to machines respecting capacity &amp; availability</p>
-                </div>
-                <div class="checklist-card glass-card">
-                    <div class="check-icon">✓</div>
-                    <h4>Precedence Constraint Handler</h4>
-                    <p>Enforce operation ordering within each job's process plan</p>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============ GANTT CHART SECTION ============ -->
-    <section class="section section-dark" id="gantt">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-badge">Visualization</span>
-                <h2 class="section-title">Interactive <span class="gradient-text">Gantt Chart</span></h2>
-                <p class="section-desc">Animated scheduling visualization across machines</p>
-            </div>
-            <div class="gantt-wrapper glass-card">
-                <div class="gantt-legend">
-                    <div class="legend-item"><span class="legend-color" style="background:var(--job1)"></span> Job 1</div>
-                    <div class="legend-item"><span class="legend-color" style="background:var(--job2)"></span> Job 2</div>
-                    <div class="legend-item"><span class="legend-color" style="background:var(--job3)"></span> Job 3</div>
-                </div>
-                <div class="gantt-chart" id="ganttChart">
-                    <!-- Machine rows -->
-                    <div class="gantt-row">
-                        <div class="gantt-label">M1</div>
-                        <div class="gantt-track">
-                            <div class="gantt-bar job1" style="left:0%;width:20%" data-tooltip="Job 1 Op 1 (0-2)">J1·O1</div>
-                            <div class="gantt-bar job2" style="left:25%;width:15%" data-tooltip="Job 2 Op 2 (2.5-4)">J2·O2</div>
-                            <div class="gantt-bar job3" style="left:50%;width:20%" data-tooltip="Job 3 Op 3 (5-7)">J3·O3</div>
-                        </div>
-                    </div>
-                    <div class="gantt-row">
-                        <div class="gantt-label">M2</div>
-                        <div class="gantt-track">
-                            <div class="gantt-bar job2" style="left:0%;width:25%" data-tooltip="Job 2 Op 1 (0-2.5)">J2·O1</div>
-                            <div class="gantt-bar job1" style="left:30%;width:20%" data-tooltip="Job 1 Op 2 (3-5)">J1·O2</div>
-                            <div class="gantt-bar job3" style="left:55%;width:25%" data-tooltip="Job 3 Op 2 (5.5-8)">J3·O2</div>
-                        </div>
-                    </div>
-                    <div class="gantt-row">
-                        <div class="gantt-label">M3</div>
-                        <div class="gantt-track">
-                            <div class="gantt-bar job3" style="left:0%;width:15%" data-tooltip="Job 3 Op 1 (0-1.5)">J3·O1</div>
-                            <div class="gantt-bar job1" style="left:50%;width:20%" data-tooltip="Job 1 Op 3 (5-7)">J1·O3</div>
-                            <div class="gantt-bar job2" style="left:75%;width:15%" data-tooltip="Job 2 Op 3 (7.5-9)">J2·O3</div>
-                        </div>
-                    </div>
-                    <!-- Time axis -->
-                    <div class="gantt-time-axis">
-                        <span>0</span><span>1</span><span>2</span><span>3</span><span>4</span><span>5</span><span>6</span><span>7</span><span>8</span><span>9</span><span>10</span>
-                    </div>
-                </div>
-                <div class="gantt-footer">
-                    <div class="gantt-stat"><span class="gantt-stat-value">9</span><span class="gantt-stat-label">Makespan</span></div>
-                    <div class="gantt-stat"><span class="gantt-stat-value">3</span><span class="gantt-stat-label">Machines</span></div>
-                    <div class="gantt-stat"><span class="gantt-stat-value">3</span><span class="gantt-stat-label">Jobs</span></div>
-                    <div class="gantt-stat"><span class="gantt-stat-value">9</span><span class="gantt-stat-label">Operations</span></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============ TEACHER VALIDATION ============ -->
-    <section class="section" id="validation">
-        <div class="container">
-            <div class="validation-card glass-card">
-                <div class="validation-icon">🎓</div>
-                <h3 class="validation-title">Teacher Validation &amp; Academic Evaluation</h3>
-                <p class="validation-text">
-                    Classic OR benchmark problem. Results can be compared against known optimal solutions 
-                    for easy validation and academic evaluation.
-                </p>
-                <div class="validation-badges">
-                    <span class="vbadge">✓ Benchmark Verified</span>
-                    <span class="vbadge">✓ Peer Reviewed</span>
-                    <span class="vbadge">✓ Publication Ready</span>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============ METRICS SECTION ============ -->
-    <section class="section section-dark" id="metrics">
-        <div class="container">
-            <div class="section-header">
-                <span class="section-badge">Performance</span>
-                <h2 class="section-title">Project <span class="gradient-text">Metrics</span></h2>
-            </div>
-            <div class="metrics-grid">
-                <div class="metric-card glass-card">
-                    <div class="metric-value" data-target="72">0</div>
-                    <div class="metric-unit">%</div>
-                    <div class="metric-label">Code Reuse</div>
-                    <div class="metric-bar"><div class="metric-bar-fill" style="--fill:72%"></div></div>
-                </div>
-                <div class="metric-card glass-card">
-                    <div class="metric-value" data-target="3">0</div>
-                    <div class="metric-unit"></div>
-                    <div class="metric-label">Metaheuristics</div>
-                    <div class="metric-bar"><div class="metric-bar-fill" style="--fill:100%"></div></div>
-                </div>
-                <div class="metric-card glass-card">
-                    <div class="metric-value" data-target="95">0</div>
-                    <div class="metric-unit">%</div>
-                    <div class="metric-label">Architecture Reuse</div>
-                    <div class="metric-bar"><div class="metric-bar-fill" style="--fill:95%"></div></div>
-                </div>
-                <div class="metric-card glass-card">
-                    <div class="metric-value" data-target="100">0</div>
-                    <div class="metric-unit">%</div>
-                    <div class="metric-label">Research Ready</div>
-                    <div class="metric-bar"><div class="metric-bar-fill" style="--fill:100%"></div></div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============ BOTTOM CTA ============ -->
-    <section class="section" id="cta">
-        <div class="container">
-            <div class="cta-block">
-                <h2 class="cta-title">Ready to Build the <span class="gradient-text">Complete Project?</span></h2>
-                <p class="cta-desc">Explore every component — from problem definition through performance analysis.</p>
-                <button class="btn btn-glow" id="ctaBtn">
-                    <span>Build Complete Project Structure</span>
-                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12M12 6l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                </button>
-
-                <div class="cta-sections" id="ctaSections">
-                    <div class="cta-section-card glass-card" style="--delay:0">
-                        <span class="cta-section-num">01</span>
-                        <h4>Problem Definition</h4>
-                        <p>Formal JSSP formulation with sets, parameters, and decision variables</p>
-                    </div>
-                    <div class="cta-section-card glass-card" style="--delay:1">
-                        <span class="cta-section-num">02</span>
-                        <h4>Mathematical Model</h4>
-                        <p>Objective function, precedence constraints, and disjunctive constraints</p>
-                    </div>
-                    <div class="cta-section-card glass-card" style="--delay:2">
-                        <span class="cta-section-num">03</span>
-                        <h4>GA Implementation</h4>
-                        <p>Chromosome encoding, OX crossover, swap mutation, and selection</p>
-                    </div>
-                    <div class="cta-section-card glass-card" style="--delay:3">
-                        <span class="cta-section-num">04</span>
-                        <h4>PSO Implementation</h4>
-                        <p>Particle representation, velocity updates, and position mapping</p>
-                    </div>
-                    <div class="cta-section-card glass-card" style="--delay:4">
-                        <span class="cta-section-num">05</span>
-                        <h4>ACO Implementation</h4>
-                        <p>Pheromone matrix, ant construction, and evaporation strategy</p>
-                    </div>
-                    <div class="cta-section-card glass-card" style="--delay:5">
-                        <span class="cta-section-num">06</span>
-                        <h4>Benchmark Datasets</h4>
-                        <p>ft06, ft10, la01–la40 standard instances from OR-Library</p>
-                    </div>
-                    <div class="cta-section-card glass-card" style="--delay:6">
-                        <span class="cta-section-num">07</span>
-                        <h4>Gantt Charts</h4>
-                        <p>Visual machine-timeline diagrams for every algorithm output</p>
-                    </div>
-                    <div class="cta-section-card glass-card" style="--delay:7">
-                        <span class="cta-section-num">08</span>
-                        <h4>Performance Comparison</h4>
-                        <p>GA vs PSO vs ACO convergence curves and statistical analysis</p>
-                    </div>
-                    <div class="cta-section-card glass-card" style="--delay:8">
-                        <span class="cta-section-num">09</span>
-                        <h4>Research Report</h4>
-                        <p>Complete IEEE-format paper with abstract, methodology, and results</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- ============ FOOTER ============ -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-inner">
-                <div class="footer-brand">
-                    <span class="logo-icon">⚙</span>
-                    <span class="logo-text">JobShop<span class="accent">Optimizer</span></span>
-                </div>
-                <p class="footer-text">Final Year Capstone Project &bull; Operations Research &bull; 2025</p>
-                <div class="footer-links">
-                    <a href="#hero">Home</a>
-                    <a href="#algorithms">Algorithms</a>
-                    <a href="#gantt">Gantt Chart</a>
-                    <a href="#metrics">Metrics</a>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <script src="app.js"></script>
+<script src="app.js"></script>
 </body>
 </html>
