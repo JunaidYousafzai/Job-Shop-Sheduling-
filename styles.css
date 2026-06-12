@@ -6,6 +6,7 @@
 --green:#22c55e;--green-d:rgba(34,197,94,.12);
 --blue:#3b82f6;--blue-d:rgba(59,130,246,.12);
 --red:#ef4444;--red-d:rgba(239,68,68,.12);
+--cyan:#06b6d4;--cyan-d:rgba(6,182,212,.12);
 --r:8px;--r-lg:14px;
 --sans:'Inter',system-ui,sans-serif;--mono:'JetBrains Mono',monospace;
 --tr:.2s ease;
@@ -31,11 +32,20 @@ a{color:inherit;text-decoration:none}
 .app-layout{display:flex;height:calc(100vh - 48px)}
 
 /* LEFT PANEL */
-.panel-left{width:360px;min-width:360px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column}
+.panel-left{width:380px;min-width:380px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column}
 .panel-scroll{flex:1;overflow-y:auto;padding:16px}
 
 /* CENTER */
 .panel-center{flex:1;overflow-y:auto;padding:20px;background:var(--bg)}
+
+/* PRESETS */
+.presets-section{margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.presets-section h4{font-size:.82rem;font-weight:600;margin-bottom:10px}
+.preset-select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:var(--r);padding:10px 12px;color:var(--t1);font-family:var(--sans);font-size:.82rem;font-weight:500;outline:none;cursor:pointer;transition:border-color var(--tr);appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2352525b' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center}
+.preset-select:focus{border-color:var(--orange)}
+.preset-select option{background:var(--bg2);color:var(--t1);padding:8px}
+.preset-hint{font-size:.7rem;color:var(--t3);margin-top:6px;font-style:italic;transition:all var(--tr)}
+.preset-hint.loaded{color:var(--green);font-style:normal;font-weight:600}
 
 /* TABS */
 .tab-switcher{display:flex;gap:4px;margin-bottom:16px;background:var(--bg);border-radius:var(--r);padding:3px}
@@ -72,8 +82,8 @@ a{color:inherit;text-decoration:none}
 .btn-ghost:hover{border-color:var(--border-h);color:var(--t1)}
 .btn-danger{background:var(--red-d);color:var(--red);border:1px solid rgba(239,68,68,.15)}
 .btn-danger:hover{background:rgba(239,68,68,.2)}
-.btn-run{width:100%;padding:14px;font-size:.9rem;background:linear-gradient(135deg,var(--orange),#ea580c);color:#fff;border-radius:var(--r);margin-top:12px;box-shadow:0 0 20px rgba(249,115,22,.2)}
-.btn-run:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 0 30px rgba(249,115,22,.35)}
+.btn-run{width:100%;padding:14px;font-size:.9rem;background:linear-gradient(135deg,var(--cyan),#0891b2);color:#fff;border-radius:var(--r);margin-top:12px;box-shadow:0 0 20px rgba(6,182,212,.2)}
+.btn-run:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 0 30px rgba(6,182,212,.35)}
 .btn-run:disabled{opacity:.4;cursor:not-allowed}
 
 /* UPLOAD ZONE */
@@ -106,7 +116,7 @@ a{color:inherit;text-decoration:none}
 /* PROGRESS */
 .progress-wrap{margin-top:8px;display:flex;align-items:center;gap:10px}
 .progress-bar{flex:1;height:6px;background:var(--bg);border-radius:100px;overflow:hidden}
-.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--orange),var(--green));border-radius:100px;transition:width .15s ease}
+.progress-fill{height:100%;width:0;background:linear-gradient(90deg,var(--cyan),var(--green));border-radius:100px;transition:width .15s ease}
 .progress-label{font-size:.72rem;font-family:var(--mono);color:var(--t2);min-width:36px;text-align:right}
 
 /* EMPTY STATE */
@@ -116,7 +126,7 @@ a{color:inherit;text-decoration:none}
 .empty-state>p{color:var(--t2);font-size:.9rem;max-width:480px;line-height:1.7;margin-bottom:28px}
 .empty-steps{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
 .step{display:flex;align-items:center;gap:8px;font-size:.82rem;color:var(--t2);background:var(--bg2);padding:8px 14px;border-radius:var(--r);border:1px solid var(--border)}
-.step-num{width:22px;height:22px;border-radius:50%;background:var(--orange-d);color:var(--orange);font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step-num{width:22px;height:22px;border-radius:50%;background:var(--cyan-d);color:var(--cyan);font-size:.72rem;font-weight:700;display:flex;align-items:center;justify-content:center}
 
 /* GLASS CARD */
 .glass-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-lg);backdrop-filter:blur(12px);padding:20px;margin-bottom:16px}
@@ -137,14 +147,14 @@ a{color:inherit;text-decoration:none}
 .gl-color{width:12px;height:12px;border-radius:3px}
 .gantt-container{position:relative;overflow-x:auto;min-height:60px}
 .gantt-row{display:flex;align-items:center;margin-bottom:6px}
-.gantt-label{width:44px;font-family:var(--mono);font-size:.72rem;font-weight:600;color:var(--t3);flex-shrink:0}
+.gantt-label{width:110px;font-family:var(--mono);font-size:.68rem;font-weight:600;color:var(--t3);flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .gantt-track{flex:1;height:34px;background:rgba(255,255,255,.02);border-radius:6px;position:relative;min-width:0}
 .gantt-bar{position:absolute;top:3px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:.62rem;font-weight:600;color:#fff;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;padding:0 4px;cursor:default;transition:filter .2s,transform .2s;animation:barSlide .5s ease forwards;opacity:0}
 @keyframes barSlide{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:1}}
 .gantt-bar:hover{filter:brightness(1.25);transform:translateY(-1px);z-index:2}
 .gantt-bar .bar-tip{display:none;position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--bg3);color:var(--t1);padding:4px 8px;border-radius:4px;font-size:.68rem;white-space:nowrap;z-index:10;border:1px solid var(--border);pointer-events:none}
 .gantt-bar:hover .bar-tip{display:block}
-.gantt-time-ruler{display:flex;padding-left:44px;margin-top:6px}
+.gantt-time-ruler{display:flex;padding-left:110px;margin-top:6px}
 .gantt-time-ruler span{font-family:var(--mono);font-size:.62rem;color:var(--t3)}
 .makespan-marker{position:absolute;top:0;bottom:0;width:2px;background:var(--red);z-index:5;opacity:.7}
 .makespan-label{position:absolute;top:-18px;left:50%;transform:translateX(-50%);font-size:.62rem;font-family:var(--mono);color:var(--red);white-space:nowrap}
